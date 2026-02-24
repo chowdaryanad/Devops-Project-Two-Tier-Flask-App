@@ -27,7 +27,6 @@ docker compose down
 ## 📸 Project Screenshots
 
 ### 1. Project Setup & Initial Configuration
-![Setup](./Screenshots/1.png)
 *Initial project structure and Docker setup configuration*
 
 ### 2. Docker Build Process
@@ -43,15 +42,12 @@ docker compose down
 *Landing page featuring message board with Anand branding*
 
 ### 5. Jenkins Pipeline Configuration
-![Jenkins Setup](./Screenshots/5.png)
 *Jenkins CI/CD pipeline configuration with GitHub integration*
 
 ### 6. Jenkins Build Execution
-![Jenkins Build](./Screenshots/6.png)
 *Automated build and deployment process through Jenkins pipeline*
 
 ### 7. Deployment Success & Application Live
-![Deployment Success](./Screenshots/7.png)
 *Successfully deployed application with messages persisting in MySQL database*
 
 ---
