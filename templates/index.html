@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anand | Message Board</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', 'Segoe UI', Tahoma, sans-serif;
+            background: radial-gradient(circle at 20% 25%, rgba(99,102,241,0.18), transparent 32%),
+                        radial-gradient(circle at 85% 10%, rgba(236,72,153,0.18), transparent 30%),
+                        linear-gradient(135deg, #05060f 0%, #0b1026 40%, #05060f 100%);
+            color: #e8ecf5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 28px;
+        }
+
+        .shell {
+            position: relative;
+            width: min(1080px, 96vw);
+        }
+
+        .glow-ring {
+            position: absolute;
+            inset: -24px;
+            background: conic-gradient(from 120deg, rgba(99,102,241,0.2), rgba(236,72,153,0.16), rgba(99,102,241,0.2));
+            filter: blur(28px);
+            opacity: 0.8;
+            z-index: 0;
+            border-radius: 28px;
+        }
+
+        .card {
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(145deg, rgba(20,24,46,0.92), rgba(14,18,36,0.94));
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 25px 90px rgba(0,0,0,0.55);
+            border-radius: 22px;
+            padding: 32px;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 26px;
+            overflow: hidden;
+        }
+
+        @media (max-width: 900px) {
+            .card { grid-template-columns: 1fr; }
+        }
+
+        .hero {
+            position: relative;
+            padding: 6px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 10px;
+        }
+
+        .avatar {
+            width: 78px;
+            height: 78px;
+            border-radius: 24px;
+            background: radial-gradient(circle at 30% 30%, #a5b4fc, #6366f1 65%, #312e81);
+            border: 3px solid rgba(255,255,255,0.14);
+            box-shadow: 0 10px 30px rgba(99,102,241,0.35);
+        }
+
+        .title {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            color: #cbd5e1;
+            font-size: 0.98rem;
+            margin-top: 4px;
+        }
+
+        .hero-highlight {
+            margin: 10px 0 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: rgba(99,102,241,0.12);
+            border: 1px solid rgba(99,102,241,0.3);
+            color: #c7d2fe;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .pill-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 16px 0 12px;
+        }
+
+        .pill {
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.05);
+            color: #e5e7ef;
+            border: 1px solid rgba(255,255,255,0.08);
+            font-size: 0.86rem;
+        }
+
+        .grid-two {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .stat {
+            padding: 14px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            color: #cbd5e1;
+        }
+
+        .stat strong { color: #e5e7ef; font-size: 1.1rem; }
+
+        .section-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 16px 16px 14px;
+            margin-top: 14px;
+        }
+
+        .section-title {
+            font-size: 1.05rem;
+            margin-bottom: 8px;
+            color: #e5e7ef;
+        }
+
+        .section-text {
+            color: #cbd5e1;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .message-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .message-form input[type="text"] {
+            flex: 1;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.05);
+            color: #e5e7ef;
+            font-size: 0.96rem;
+        }
+
+        .message-form input[type="text"]:focus {
+            outline: 2px solid rgba(99,102,241,0.45);
+            border-color: rgba(99,102,241,0.45);
+        }
+
+        .message-form button {
+            padding: 0 18px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #10b981 0%, #22d3ee 100%);
+            color: #04101c;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+            cursor: pointer;
+            transition: transform 0.12s ease, box-shadow 0.2s ease;
+            box-shadow: 0 12px 28px rgba(16,185,129,0.25);
+        }
+
+        .message-form button:hover { transform: translateY(-1px); }
+        .message-form button:active { transform: translateY(0); }
+
+        .success-message {
+            margin-top: 10px;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(34,197,94,0.12);
+            color: #bbf7d0;
+            border: 1px solid rgba(34,197,94,0.35);
+            display: none;
+        }
+
+        .messages-panel {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .messages-block {
+            margin-top: 8px;
+            display: grid;
+            gap: 12px;
+            max-height: 480px;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+
+        .message-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: #e5e7ef;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+            animation: rise 0.25s ease;
+        }
+
+        .message-item::before {
+            content: '●';
+            color: #22d3ee;
+            margin-right: 8px;
+            font-size: 0.8rem;
+        }
+
+        .no-messages {
+            color: #9ca3af;
+            text-align: center;
+            padding: 28px 10px;
+            border: 1px dashed rgba(255,255,255,0.12);
+            border-radius: 12px;
+        }
+
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .messages-block::-webkit-scrollbar { width: 8px; }
+        .messages-block::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.18);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <div class="glow-ring"></div>
+        <div class="card">
+            <div class="hero">
+                <div class="header">
+                    <div class="avatar"></div>
+                    <div>
+                        <div class="title">Anand</div>
+                        <div class="subtitle">DevOps & Cloud | Two-Tier Flask + MySQL</div>
+                    </div>
+                </div>
+
+                <div class="hero-highlight">🚀 Built with CI/CD, Docker, and resilient MySQL</div>
+
+                <div class="pill-row">
+                    <div class="pill">Docker Compose</div>
+                    <div class="pill">Jenkins CI/CD</div>
+                    <div class="pill">AWS EC2</div>
+                    <div class="pill">MySQL</div>
+                    <div class="pill">Python Flask</div>
+                </div>
+
+                <div class="grid-two">
+                    <div class="stat"><strong>Always On</strong><br/>Health checks + restart policy keep the stack alive.</div>
+                    <div class="stat"><strong>Data Safe</strong><br/>Persistent volumes ensure your messages stay.</div>
+                    <div class="stat"><strong>CI/CD</strong><br/>Every push rebuilds & redeploys automatically.</div>
+                    <div class="stat"><strong>Secure</strong><br/>Isolated network for app ↔ DB traffic.</div>
+                </div>
+
+                <div class="section-card">
+                    <div class="section-title">Add a message</div>
+                    <div class="success-message" id="successMessage">Message added successfully! 🎉</div>
+                    <form id="messageForm" class="message-form">
+                        <input type="text" id="new_message" name="new_message" placeholder="Drop a note for Anand..." required>
+                        <button type="submit">Send</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="section-card messages-panel">
+                <div class="section-title">Messages</div>
+                <div class="messages-block" id="messagesList">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="message-item">{{ message[0] }}</div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="no-messages">No messages yet. Be the first to send one!</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('messageForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const messageInput = document.getElementById('new_message');
+            const message = messageInput.value.trim();
+            
+            if (!message) return;
+            
+            try {
+                const response = await fetch('/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `new_message=${encodeURIComponent(message)}`
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Show success message
+                    const successMsg = document.getElementById('successMessage');
+                    successMsg.style.display = 'block';
+                    setTimeout(() => {
+                        successMsg.style.display = 'none';
+                    }, 3000);
+                    
+                    // Add message to list
+                    const messagesList = document.getElementById('messagesList');
+                    const noMessages = messagesList.querySelector('.no-messages');
+                    if (noMessages) {
+                        noMessages.remove();
+                    }
+                    
+                    const newMessageDiv = document.createElement('div');
+                    newMessageDiv.className = 'message-item';
+                    newMessageDiv.textContent = data.message;
+                    messagesList.insertBefore(newMessageDiv, messagesList.firstChild);
+                    
+                    // Clear input
+                    messageInput.value = '';
+                    messageInput.focus();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to send message. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>
